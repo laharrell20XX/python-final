@@ -1,7 +1,7 @@
 def process_inventory(unprocessed_inventory):
     '''(list of str) -> list of dict
 
-    Returns a list of inventory items as a list of inventory dictionaries
+    Returns a list of inventory items as a list of item dictionaries
     '''
     inventory_list = []
     for item in unprocessed_inventory:
@@ -14,3 +14,15 @@ def process_inventory(unprocessed_inventory):
             initial_stock=int(item[4]))
         inventory_list.append(item_dict)
     return inventory_list
+
+
+def convert_inventory(inventory_list):
+    '''(list of dict) -> list of str
+
+    Returns a list of item dictionaries as a list of item strings
+    '''
+    unprocessed_inventory = []
+    for item in inventory_list:
+        item_str = f'{item["item_name"]},{item["base_rental_price"]},{item["replacement_cost"]},{item["in_stock"]},{item["initial_stock"]}\n'
+        unprocessed_inventory.append(item_str)
+    return unprocessed_inventory
