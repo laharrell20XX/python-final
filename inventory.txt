@@ -1,0 +1,4 @@
+Saitama,30,100,7,7
+A Real Adventurer,30,90,1,1
+A Businessman,40,110,4,4
+
