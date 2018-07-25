@@ -6,8 +6,10 @@ def read_inventory(inventory_file):
 
     reads the inventory and returns it as a list with each line being a new item
     '''
+    inventory_list = []
     with open(inventory_file) as file:
-        inventory_list = file.readlines()
+        for line in file.readlines():
+            inventory_list.append(line)
     return inventory_list
 
 
