@@ -46,11 +46,11 @@ def return_item(item):
 
 
 def add_item_to_cart(cart, item, choice):
-    ''' (list, dict) -> list of lists
+    ''' (list, dict, str) -> list of lists
 
     Adds an item to the cart; can either be an item to rent or an item to return
     '''
-    cart.append([item['item_name'], choice])
+    cart.append([item, choice])
     return cart
 
 
