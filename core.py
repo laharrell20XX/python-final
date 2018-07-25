@@ -43,3 +43,12 @@ def return_item(item):
     increases the in_stock number of the item being asked for by 1
     '''
     item['in_stock'] += 1
+
+
+def add_item_to_cart(cart, item, choice):
+    ''' (list, dict) -> list of lists
+
+    Adds an item to the cart; can either be an item to rent or an item to return
+    '''
+    cart.append([item['item_name'], choice])
+    return cart
