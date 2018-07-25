@@ -113,3 +113,60 @@ def test_return_item_full_stocked():
     }
     core.return_item(item)
     assert item['in_stock'] == 7
+
+
+def test_add_item_to_empty_cart():
+    item = {'item_name': 'car', 'in_stock': 6, 'initial_stock': 6}
+    cart = []
+    assert core.add_item_to_cart(cart, item, 'rent') == [['car', 'rent']]
+
+
+def test_check_full_stock_not_full():
+    inventory = [{
+        'item_name': 'car',
+        'in_stock': 4,
+        'initial_stock': 5
+    }, {
+        'item_name': 'rabbit',
+        'in_stock': 7,
+        'initial_stock': 8
+    }, {
+        'item_name': 'pen',
+        'in_stock': 11,
+        'initial_stock': 12
+    }]
+    assert not core.check_full_stock(inventory)
+
+
+def test_check_full_stock_some_empty():
+    inventory = [{
+        'item_name': 'car',
+        'in_stock': 5,
+        'initial_stock': 5
+    }, {
+        'item_name': 'rabbit',
+        'in_stock': 8,
+        'initial_stock': 8
+    }, {
+        'item_name': 'pen',
+        'in_stock': 0,
+        'initial_stock': 12
+    }]
+    assert not core.check_full_stock(inventory)
+
+
+def test_check_full_stock_full():
+    inventory = [{
+        'item_name': 'car',
+        'in_stock': 5,
+        'initial_stock': 5
+    }, {
+        'item_name': 'rabbit',
+        'in_stock': 8,
+        'initial_stock': 8
+    }, {
+        'item_name': 'pen',
+        'in_stock': 12,
+        'initial_stock': 12
+    }]
+    core.check_full_stock(inventory)
