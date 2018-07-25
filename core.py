@@ -52,3 +52,15 @@ def add_item_to_cart(cart, item, choice):
     '''
     cart.append([item['item_name'], choice])
     return cart
+
+
+def check_full_stock(inventory):
+    ''' (list of dict) -> bool
+
+    Checks the inventory to see if the entire stock is full.
+    '''
+    full_stock = False
+    for item in inventory:
+        if item['in_stock'] == item['initial_stock']:
+            full_stock += True
+    return full_stock == len(inventory)
