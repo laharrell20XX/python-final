@@ -1,4 +1,4 @@
-import core, shell
+import core, disk
 
 
 def greeting():
@@ -7,18 +7,18 @@ def greeting():
     '''
 
 
-def show_inventory(inventory, id):
+def show_inventory(inventory, identity):
     ''' (list of dict) -> NoneType
 
-    Shows the inventory in a user friendly way depending on the id of the user
+    Shows the inventory in a user friendly way depending on the identity of the user
     '''
     inventory_str = ''
-    if id == 'c':  #what customer sees
+    if identity == 'c':  #what customer sees
         for item in inventory:
             if item['in_stock']:
                 inventory_str += f'{item["item_name"]}: ${item["base_rental_price"]:.2f} to rent (${item["replacement_cost"]:.2f} to replace), {item["in_stock"]} left in stock\n'
         print(inventory_str)
-    if id == 'e':  #what employee sees
+    if identity == 'e':  #what employee sees
         for item in inventory:
             inventory_str += f'{item["item_name"]}: ${item["base_rental_price"]:.2f} to rent (${item["replacement_cost"]:.2f} to replace), {item["in_stock"]} left in stock (initial stock: {item["initial_stock"]})\n'
         print(inventory_str)
@@ -78,8 +78,29 @@ def which_item(inventory):
         )
 
 
+def add_item_to_cart(cart, item, choice):
+    ''' (list, dict) -> list of lists
+
+    Adds an item to the cart; can either be an item to rent or an item to return
+    '''
+    cart.append([item['item_name'], choice])
+
+
 def main():
-    pass
+    inventory = core.process_inventory(disk.read_inventory('inventory.txt'))
+    while True:
+        identity = employee_or_customer()
+        if identity == 'c':  #customer path
+            choice = rent_or_return()
+            if choice == 'rent':
+                item_choice = which_item(inventory)
+                core.rent_item(item_choice)
+                print(
+                    f'1 {item_choice["item_name"]} has been added to your cart'
+                )
+            if choice == 'return':
+                pass
+
     #if not item['in_stock'] == item['initial_stock']:  #checks if an item has full stock
 
 
