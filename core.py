@@ -26,3 +26,19 @@ def convert_inventory(inventory_list):
         item_str = f'{item["item_name"]},{item["base_rental_price"]},{item["replacement_cost"]},{item["in_stock"]},{item["initial_stock"]}\n'
         unprocessed_inventory.append(item_str)
     return unprocessed_inventory
+
+
+def rent_item(item):
+    '''(dict) -> NoneType
+
+    decreases the in-stock number of the item being asked for by 1
+    '''
+    item['in_stock'] -= 1
+
+
+def return_item(item):
+    '''(dict) -> NoneType
+
+    increases the in_stock number of the item being asked for by 1
+    '''
+    item['in_stock'] += 1
