@@ -7,6 +7,23 @@ def greeting():
     '''
 
 
+def rent_or_return():
+    ''' (str) -> str
+
+    Asks customer whether they want to rent or return 
+    '''
+    while True:
+        choice = input(
+            "Hi!  Type 'rent' to rent an item, or type 'return' to return an item.\n>>> "
+        ).lower()
+        if choice == 'rent':
+            return choice
+        elif choice == 'return':
+            return choice
+        else:
+            print('Invalid option')
+
+
 def employee_or_customer():
     ''' (str) -> str
 
