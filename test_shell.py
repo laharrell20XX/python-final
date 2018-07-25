@@ -53,3 +53,58 @@ Hi!  Type 'rent' to rent an item, or type 'return' to return an item.
 Invalid option
 Hi!  Type 'rent' to rent an item, or type 'return' to return an item.
 >>> RENT'''
+
+
+@should_print
+def test_show_inventory_customer_nonempty(output):
+    inventory = [{
+        'item_name': 'car',
+        'base_rental_price': 2,
+        'replacement_cost': 3,
+        'in_stock': 4,
+        'initial_stock': 5
+    }, {
+        'item_name': 'rabbit',
+        'base_rental_price': 5,
+        'replacement_cost': 6,
+        'in_stock': 7,
+        'initial_stock': 8
+    }, {
+        'item_name': 'pen',
+        'base_rental_price': 9,
+        'replacement_cost': 10,
+        'in_stock': 11,
+        'initial_stock': 12
+    }]
+    shell.show_inventory_customer(inventory)
+    assert output == '''car: $2.00 to rent ($3.00 to replace), 4 left in stock
+rabbit: $5.00 to rent ($6.00 to replace), 7 left in stock
+pen: $9.00 to rent ($10.00 to replace), 11 left in stock
+'''
+
+
+@should_print
+def test_show_inventory_customer_empty(output):
+    inventory = [{
+        'item_name': 'car',
+        'base_rental_price': 2,
+        'replacement_cost': 3,
+        'in_stock': 4,
+        'initial_stock': 5
+    }, {
+        'item_name': 'rabbit',
+        'base_rental_price': 5,
+        'replacement_cost': 6,
+        'in_stock': 0,
+        'initial_stock': 8
+    }, {
+        'item_name': 'pen',
+        'base_rental_price': 9,
+        'replacement_cost': 10,
+        'in_stock': 11,
+        'initial_stock': 12
+    }]
+    shell.show_inventory_customer(inventory)
+    assert output == '''car: $2.00 to rent ($3.00 to replace), 4 left in stock
+pen: $9.00 to rent ($10.00 to replace), 11 left in stock
+'''
