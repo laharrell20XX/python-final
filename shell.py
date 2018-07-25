@@ -61,21 +61,33 @@ def employee_or_customer():
             print("The identity you entered is not valid.  Please try again")
 
 
-def which_item(inventory):
+def which_item(inventory, mode):
     ''' (str) -> dict
 
     Asks user which item they want and returns that item as a dictionary
     '''
     while True:
         show_inventory(inventory, 'c')
-        item_choice = input(
-            '\nType the name of the item you want (case sensitive)\n>>> ')
-        for item in inventory:
-            if item_choice == item['item_name'] and item['in_stock']:
-                return item
-        print(
-            'Sorry, either we do not have that item or it is out of stock. Please try again\n'
-        )
+        if mode == 'rent':
+            item_choice = input(
+                '\nType the name of the item you want to rent (case sensitive)\n>>> '
+            )
+            for item in inventory:
+                if item_choice == item['item_name'] and item['in_stock']:
+                    return item
+            print(
+                'Sorry, either we do not have that item or it is out of stock. Please try again\n'
+            )
+        if mode == 'return':
+            item_choice = input(
+                '\nType the name of the item you want to return (case sensitive)\n>>> '
+            )
+            for item in inventory:
+                if item_choice == item['item_name'] and item['in_stock'] < item['initial_stock']:
+                    return item
+            print(
+                "Sorry that item is unable to be returned either because no one has rented it yet, or it is not offered here\n"
+            )
 
 
 def add_item_to_cart(cart, item, choice):
@@ -93,7 +105,7 @@ def main():
         if identity == 'c':  #customer path
             choice = rent_or_return()
             if choice == 'rent':
-                item_choice = which_item(inventory)
+                item_choice = which_item(inventory, 'rent')
                 core.rent_item(item_choice)
                 print(
                     f'1 {item_choice["item_name"]} has been added to your cart'
