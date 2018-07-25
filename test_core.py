@@ -118,7 +118,11 @@ def test_return_item_full_stocked():
 def test_add_item_to_empty_cart():
     item = {'item_name': 'car', 'in_stock': 6, 'initial_stock': 6}
     cart = []
-    assert core.add_item_to_cart(cart, item, 'rent') == [['car', 'rent']]
+    assert core.add_item_to_cart(cart, item, 'rent') == [[{
+        'item_name': 'car',
+        'in_stock': 6,
+        'initial_stock': 6
+    }, 'rent']]
 
 
 def test_check_full_stock_not_full():
@@ -169,4 +173,4 @@ def test_check_full_stock_full():
         'in_stock': 12,
         'initial_stock': 12
     }]
-    core.check_full_stock(inventory)
+    assert core.check_full_stock(inventory)
