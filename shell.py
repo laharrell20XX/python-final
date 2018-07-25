@@ -7,6 +7,18 @@ def greeting():
     '''
 
 
+def show_inventory_customer(inventory):
+    ''' (list of dict) -> NoneType
+
+    Shows the inventory in a customer friendly way
+    '''
+    inventory_str = ''
+    for item in inventory:
+        if item['in_stock']:
+            inventory_str += f'{item["item_name"]}: ${item["base_rental_price"]:.2f} to rent (${item["replacement_cost"]:.2f} to replace), {item["in_stock"]} left in stock\n'
+    print(inventory_str)
+
+
 def rent_or_return():
     ''' (str) -> str
 
