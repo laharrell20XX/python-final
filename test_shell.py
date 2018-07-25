@@ -164,3 +164,114 @@ def test_show_inventory_employee_empty(output):
 rabbit: $5.00 to rent ($6.00 to replace), 0 left in stock (initial stock: 8)
 pen: $9.00 to rent ($10.00 to replace), 11 left in stock (initial stock: 12)
 '''
+
+
+@with_inputs('dar', 'ca', 'car')
+@should_print
+def test_which_item_all_in_stock(output):
+    inventory = [{
+        'item_name': 'car',
+        'base_rental_price': 2,
+        'replacement_cost': 3,
+        'in_stock': 4,
+        'initial_stock': 5
+    }, {
+        'item_name': 'rabbit',
+        'base_rental_price': 5,
+        'replacement_cost': 6,
+        'in_stock': 7,
+        'initial_stock': 8
+    }, {
+        'item_name': 'pen',
+        'base_rental_price': 9,
+        'replacement_cost': 10,
+        'in_stock': 11,
+        'initial_stock': 12
+    }]
+    assert shell.which_item(inventory) == {
+        'item_name': 'car',
+        'base_rental_price': 2,
+        'replacement_cost': 3,
+        'in_stock': 4,
+        'initial_stock': 5
+    }
+    assert output == '''car: $2.00 to rent ($3.00 to replace), 4 left in stock
+rabbit: $5.00 to rent ($6.00 to replace), 7 left in stock
+pen: $9.00 to rent ($10.00 to replace), 11 left in stock
+
+
+Type the name of the item you want (case sensitive)
+>>> dar
+Sorry, either we do not have that item or it is out of stock. Please try again
+
+car: $2.00 to rent ($3.00 to replace), 4 left in stock
+rabbit: $5.00 to rent ($6.00 to replace), 7 left in stock
+pen: $9.00 to rent ($10.00 to replace), 11 left in stock
+
+
+Type the name of the item you want (case sensitive)
+>>> ca
+Sorry, either we do not have that item or it is out of stock. Please try again
+
+car: $2.00 to rent ($3.00 to replace), 4 left in stock
+rabbit: $5.00 to rent ($6.00 to replace), 7 left in stock
+pen: $9.00 to rent ($10.00 to replace), 11 left in stock
+
+
+Type the name of the item you want (case sensitive)
+>>> car
+'''
+
+
+@with_inputs('dar', 'car', 'rabbit')
+@should_print
+def test_which_item_out_of_stock(output):
+    inventory = [{
+        'item_name': 'car',
+        'base_rental_price': 2,
+        'replacement_cost': 3,
+        'in_stock': 0,
+        'initial_stock': 5
+    }, {
+        'item_name': 'rabbit',
+        'base_rental_price': 5,
+        'replacement_cost': 6,
+        'in_stock': 7,
+        'initial_stock': 8
+    }, {
+        'item_name': 'pen',
+        'base_rental_price': 9,
+        'replacement_cost': 10,
+        'in_stock': 11,
+        'initial_stock': 12
+    }]
+    assert shell.which_item(inventory) == {
+        'item_name': 'rabbit',
+        'base_rental_price': 5,
+        'replacement_cost': 6,
+        'in_stock': 7,
+        'initial_stock': 8
+    }
+    assert output == '''rabbit: $5.00 to rent ($6.00 to replace), 7 left in stock
+pen: $9.00 to rent ($10.00 to replace), 11 left in stock
+
+
+Type the name of the item you want (case sensitive)
+>>> dar
+Sorry, either we do not have that item or it is out of stock. Please try again
+
+rabbit: $5.00 to rent ($6.00 to replace), 7 left in stock
+pen: $9.00 to rent ($10.00 to replace), 11 left in stock
+
+
+Type the name of the item you want (case sensitive)
+>>> car
+Sorry, either we do not have that item or it is out of stock. Please try again
+
+rabbit: $5.00 to rent ($6.00 to replace), 7 left in stock
+pen: $9.00 to rent ($10.00 to replace), 11 left in stock
+
+
+Type the name of the item you want (case sensitive)
+>>> rabbit
+'''
