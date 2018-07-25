@@ -61,8 +61,26 @@ def employee_or_customer():
             print("The identity you entered is not valid.  Please try again")
 
 
+def which_item(inventory):
+    ''' (str) -> dict
+
+    Asks user which item they want and returns that item as a dictionary
+    '''
+    while True:
+        show_inventory(inventory, 'c')
+        item_choice = input(
+            '\nType the name of the item you want (case sensitive)\n>>> ')
+        for item in inventory:
+            if item_choice == item['item_name'] and item['in_stock']:
+                return item
+        print(
+            'Sorry, either we do not have that item or it is out of stock. Please try again\n'
+        )
+
+
 def main():
     pass
+    #if not item['in_stock'] == item['initial_stock']:  #checks if an item has full stock
 
 
 if __name__ == '__main__':
