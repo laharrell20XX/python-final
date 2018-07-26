@@ -174,3 +174,55 @@ def test_check_full_stock_full():
         'initial_stock': 12
     }]
     assert core.check_full_stock(inventory)
+
+
+def test_checkout_rent_one():
+    cart = [[{
+        'item_name': 'car',
+        'base_rental_price': 4,
+        'replacement_cost': 10
+    }, 'rent']]
+    assert core.checkout(cart) == 5.28
+
+
+def test_checkout_multiple_rent():
+    cart = [[{
+        'item_name': 'car',
+        'base_rental_price': 4,
+        'replacement_cost': 10
+    }, 'rent'], [{
+        'item_name': 'car',
+        'base_rental_price': 4,
+        'replacement_cost': 10
+    }, 'rent'], [{
+        'item_name': 'rabbit',
+        'base_rental_price': 7,
+        'replacement_cost': 15
+    }, 'rent']]
+    assert core.checkout(cart) == 19.55
+
+
+def test_checkout_one_return():
+    cart = [[{
+        'item_name': 'car',
+        'base_rental_price': 4,
+        'replacement_cost': 10
+    }, 'return']]
+    assert core.checkout(cart) == -1.0
+
+
+def test_checkout_mix():
+    cart = [[{
+        'item_name': 'car',
+        'base_rental_price': 4,
+        'replacement_cost': 10
+    }, 'return'], [{
+        'item_name': 'car',
+        'base_rental_price': 4,
+        'replacement_cost': 10
+    }, 'rent'], [{
+        'item_name': 'rabbit',
+        'base_rental_price': 7,
+        'replacement_cost': 15
+    }, 'rent']]
+    assert core.checkout(cart) == 13.27
