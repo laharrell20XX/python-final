@@ -35,9 +35,8 @@ def login(manifesto_file, username):
         for name in usernames:
             if username == name.split(',')[0]:  #checks if the username exists
                 return True  #stops iterations if the name is found
-            else:
-                new_user(manifesto_file, username)
-                return False
+            new_user(manifesto_file, username)
+            return False
     else:  #first customer gets added since there are no other names
         new_user(manifesto_file, username)
         return False
