@@ -21,3 +21,32 @@ def rewrite_inventory(inventory_file, inventory_list):
     with open(inventory_file, 'w') as file:
         for item in inventory_list:
             file.write(item)
+
+
+def login(manifesto_file, username):
+    ''' (file, str) -> NoneType, bool
+
+    Checks to see if the provided username is in the file
+    already otherwise it creates a new user
+    '''
+    with open(manifesto_file) as file:
+        usernames = file.readlines()
+    if usernames:  #checks if there is something in the file
+        for name in usernames:
+            if username == name.split(',')[0]:  #checks if the username exists
+                return True  #stops iterations if the name is found
+            else:
+                new_user(manifesto_file, username)
+                return False
+    else:  #first customer gets added since there are no other names
+        new_user(manifesto_file, username)
+        return False
+
+
+def new_user(manifesto_file, username):
+    ''' (file, str) -> NoneType
+
+    Adds the provided username to the manifesto_file
+    '''
+    with open(manifesto_file, 'a') as file:
+        file.write(f'{username},(item)\n')
