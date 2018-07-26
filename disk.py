@@ -27,23 +27,16 @@ def login(manifesto_file, username):
     ''' (file, str) -> NoneType, bool
 
     Checks to see if the provided username is in the file
-    already otherwise it creates a new user
     '''
     with open(manifesto_file) as file:
         list_of_usernames = file.readlines()
-    if list_of_usernames:  #checks if there is something in the file
+    if list_of_usernames:  #checks if there are any customers at all
         for name in list_of_usernames:
             if username == name.split(',')[0]:  #checks if the username exists
-                return True, list_of_usernames  #stops iterations if the name is found
-            new_user(manifesto_file, username)
-            with open(manifesto_file) as file:
-                list_of_usernames = file.readlines()
-            return False, list_of_usernames
-    else:  #first customer gets added since there are no other names
-        new_user(manifesto_file, username)
-        with open(manifesto_file) as file:
-            list_of_usernames = file.readlines()
-        return False, list_of_usernames
+                return True  #stops iterations if the name is found
+            return False
+    else:
+        return False
 
 
 def new_user(manifesto_file, username):
@@ -53,6 +46,16 @@ def new_user(manifesto_file, username):
     '''
     with open(manifesto_file, 'a') as file:
         file.write(f'{username}, (item)\n')
+
+
+def read_manifesto(manifesto_file):
+    ''' (file) -> list of str
+
+    Reads the manifesto_file and returns
+    what was read as data to be further processed
+    '''
+    with open(manifesto_file, 'r') as file:
+        return file.readlines()
 
 
 def process_user_items(list_of_usernames):
