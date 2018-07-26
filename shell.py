@@ -61,6 +61,20 @@ def employee_or_customer():
             print("The identity you entered is not valid.  Please try again")
 
 
+def user_login():
+    while True:
+        username = input('Welcome! Please enter your name to continue.\n>>> ')
+        if username.strip():
+            if disk.login('customer_manifesto.txt', username):
+                print(f'Welcome back {username}!')
+                return username
+            else:
+                print(f'Took you long enough to find us {username}')
+                return username
+                break
+        print('Sorry, you must enter a username')
+
+
 def which_item(inventory, mode):
     ''' (str) -> dict
 
@@ -93,9 +107,10 @@ def which_item(inventory, mode):
 #if not item['in_stock'] == item['initial_stock']:  #checks if an item has full stock
 def main():
     inventory = core.process_inventory(disk.read_inventory('inventory.txt'))
+    identity = employee_or_customer()
     while True:
-        identity = employee_or_customer()
         if identity == 'c':  #customer path
+
             choice = rent_or_return()
             if choice == 'rent':
                 item_choice = which_item(inventory, 'rent')
