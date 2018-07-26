@@ -90,13 +90,7 @@ def which_item(inventory, mode):
             )
 
 
-def checkout(cart):
-    ''' (list of lists (dict, str)) -> NoneType
-
-    Items in the cart are totalled and the total is added to the agency's revenue
-    '''
-
-
+#if not item['in_stock'] == item['initial_stock']:  #checks if an item has full stock
 def main():
     inventory = core.process_inventory(disk.read_inventory('inventory.txt'))
     while True:
