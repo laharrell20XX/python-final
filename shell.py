@@ -90,12 +90,11 @@ def which_item(inventory, mode):
             )
 
 
-def add_item_to_cart(cart, item, choice):
-    ''' (list, dict) -> list of lists
+def checkout(cart):
+    ''' (list of lists (dict, str)) -> NoneType
 
-    Adds an item to the cart; can either be an item to rent or an item to return
+    Items in the cart are totalled and the total is added to the agency's revenue
     '''
-    cart.append([item['item_name'], choice])
 
 
 def main():
@@ -108,12 +107,16 @@ def main():
                 item_choice = which_item(inventory, 'rent')
                 core.rent_item(item_choice)
                 print(
-                    f'1 {item_choice["item_name"]} has been added to your cart'
+                    f'1 {item_choice["item_name"]} has been added to your cart.'
                 )
             if choice == 'return':
+                item_choice = which_item(inventory, 'return')
+                core.return_item(item_choice)
+                print(
+                    f'1 {item_choice["item_name"]} has been returned.  Please checkout to get your deposit back.'
+                )
+            if choice == 'checkout':
                 pass
-
-    #if not item['in_stock'] == item['initial_stock']:  #checks if an item has full stock
 
 
 if __name__ == '__main__':
