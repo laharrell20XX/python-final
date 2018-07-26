@@ -32,22 +32,32 @@ pen,9,10,11,12
 
 @fake_file({'manifesto.txt': ''})
 def test_login_first_customer():
-    assert not disk.login('manifesto.txt', 'Logan')
-    assert open('manifesto.txt').read() == 'Logan,(item)\n'
+    assert not disk.login('manifesto.txt', 'Logan')[0]
+    assert open('manifesto.txt').read() == 'Logan, (item)\n'
 
 
-@fake_file({'manifesto.txt': 'Logan,(item)\nBill,(item)\n'})
+@fake_file({'manifesto.txt': 'Logan, (item)\nBill, (item)\n'})
 def test_login_new_customer():
-    assert not disk.login('manifesto.txt', 'Bob')
-    assert open('manifesto.txt').read() == '''Logan,(item)
-Bill,(item)
-Bob,(item)
+    assert not disk.login('manifesto.txt', 'Bob')[0]
+    assert open('manifesto.txt').read() == '''Logan, (item)
+Bill, (item)
+Bob, (item)
 '''
 
 
 @fake_file({'manifesto.txt': 'Logan,(item)\nBill,(item)\n'})
 def test_login_existing_customer():
-    assert disk.login('manifesto.txt', 'Logan')
+    assert disk.login('manifesto.txt', 'Logan')[0]
     assert open('manifesto.txt').read() == '''Logan,(item)
 Bill,(item)
 '''
+
+
+def test_process_user_items():
+    list_of_usernames = ['Logan, (item)', 'Bill, (two,three,four)']
+    assert disk.process_user_items(list_of_usernames) == [{
+        'Logan': '(item)'
+    }, {
+        'Bill':
+        '(two,three,four)'
+    }]
