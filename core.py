@@ -54,6 +54,22 @@ def add_item_to_cart(cart, item, choice):
     return cart
 
 
+def checkout(cart):
+    ''' (list of lists [dict, str]) -> float
+
+    Items in the cart are totalled and the total is returned
+    '''
+    grand_total = 0
+    replacement_deposit = 0
+    for item in cart:
+        if 'rent' in item:
+            grand_total += item[0]['base_rental_price']
+            replacement_deposit += (item[0]['replacement_cost'] * .1)
+        if 'return' in item:
+            replacement_deposit -= item[0]['replacement_cost'] * .1
+    return float(f'{(grand_total * 1.07) + replacement_deposit:.2f}')
+
+
 def check_full_stock(inventory):
     ''' (list of dict) -> bool
 
