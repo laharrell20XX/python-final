@@ -62,16 +62,23 @@ def employee_or_customer():
 
 
 def user_login():
+    ''' self -> list of dict
+
+    Asks the user for their username and checks it against the manifesto;
+    a new user is created if they don't exist in the file
+    '''
     while True:
         username = input('Welcome! Please enter your name to continue.\n>>> ')
         if username.strip():
             if disk.login('customer_manifesto.txt', username):
                 print(f'Welcome back {username}!')
-                return username
+                return disk.process_user_items(
+                    disk.read_manifesto('customer_manifesto.txt'))
             else:
-                print(f'Took you long enough to find us {username}')
-                return username
-                break
+                disk.new_user('customer_manifesto.txt', username)
+                print(f'Took you long enough to find us {username}! Welcome!')
+                return disk.process_user_items(
+                    disk.read_manifesto('customer_manifesto.txt'))
         print('Sorry, you must enter a username')
 
 
@@ -81,17 +88,8 @@ def which_item(inventory, mode):
     Asks user which item they want and returns that item as a dictionary
     '''
     while True:
-        show_inventory(inventory, 'c')
         if mode == 'rent':
-            item_choice = input(
-                '\nType the name of the item you want to rent (case sensitive)\n>>> '
-            )
-            for item in inventory:
-                if item_choice == item['item_name'] and item['in_stock']:
-                    return item
-            print(
-                'Sorry, either we do not have that item or it is out of stock. Please try again\n'
-            )
+            return rent_mode(inventory)
         if mode == 'return':
             item_choice = input(
                 '\nType the name of the item you want to return (case sensitive)\n>>> '
@@ -104,13 +102,31 @@ def which_item(inventory, mode):
             )
 
 
+def rent_mode(inventory):
+    ''' (list of dict, str) -> dict
+
+    checks if the item is in the inventory before it is rented
+    '''
+    while True:
+        show_inventory(inventory, 'c')
+        item_choice = input(
+            '\nType the name of the item you want to rent (case sensitive)\n>>> '
+        )
+        for item in inventory:
+            if item_choice == item['item_name'] and item['in_stock']:
+                return item
+        print(
+            'Sorry, either we do not have that item or it is out of stock. Please try again\n'
+        )
+
+
 #if not item['in_stock'] == item['initial_stock']:  #checks if an item has full stock
 def main():
     inventory = core.process_inventory(disk.read_inventory('inventory.txt'))
     identity = employee_or_customer()
     while True:
         if identity == 'c':  #customer path
-
+            username = user_login()
             choice = rent_or_return()
             if choice == 'rent':
                 item_choice = which_item(inventory, 'rent')
