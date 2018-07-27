@@ -72,18 +72,16 @@ def user_login():
         if username.strip():
             if disk.login('customer_manifesto.txt', username):
                 print(f'Welcome back {username}!')
-                return disk.process_user_items(
-                    disk.read_manifesto('customer_manifesto.txt'))
+                return username
             else:
                 disk.new_user('customer_manifesto.txt', username)
                 print(f'Took you long enough to find us {username}! Welcome!')
-                return disk.process_user_items(
-                    disk.read_manifesto('customer_manifesto.txt'))
+                return username
         print('Sorry, you must enter a username')
 
 
-def which_item(inventory, mode):
-    ''' (str) -> dict
+def which_item(inventory, mode, customer, customer_manifesto):
+    ''' (str, str) -> dict
 
     Asks user which item they want and returns that item as a dictionary
     '''
@@ -91,15 +89,7 @@ def which_item(inventory, mode):
         if mode == 'rent':
             return rent_mode(inventory)
         if mode == 'return':
-            item_choice = input(
-                '\nType the name of the item you want to return (case sensitive)\n>>> '
-            )
-            for item in inventory:
-                if item_choice == item['item_name'] and item['in_stock'] < item['initial_stock']:
-                    return item
-            print(
-                "Sorry that item is unable to be returned either because no one has rented it yet, or it is not offered here\n"
-            )
+            return return_mode(inventory, customer, customer_manifesto)
 
 
 def rent_mode(inventory):
@@ -120,7 +110,33 @@ def rent_mode(inventory):
         )
 
 
-#if not item['in_stock'] == item['initial_stock']:  #checks if an item has full stock
+def return_mode(inventory, customer, customer_manifesto):
+    ''' (list of dict, str, list of dict) -> item, None
+
+    Returns the item that the user wants to return
+    '''
+    rented_items = core.get_rented_items(customer, customer_manifesto)
+    while True:
+        if core.can_return(customer, customer_manifesto):
+            show_inventory(inventory, 'c')
+            print(
+                f'Okay you have {len(rented_items)} item(s) you have rented:')
+            print('', *rented_items, sep='\n\t', end='\n')
+            item_choice = input(
+                '\nType the name of the item you want to return (case sensitive)\n>>> '
+            )
+            for item in inventory:
+                if item_choice == item['item_name']:
+                    return item
+                else:
+                    print('Sorry, that item has not been rented by you.\n')
+        else:
+            print(
+                "You haven't rented anything yet.  Redirecting you to the login screen..."
+            )
+            return None
+
+
 def main():
     inventory = core.process_inventory(disk.read_inventory('inventory.txt'))
     identity = employee_or_customer()
@@ -128,6 +144,8 @@ def main():
         if identity == 'c':  #customer path
             username = user_login()
             choice = rent_or_return()
+            customer_manifesto = disk.process_user_items(
+                disk.read_manifesto('customer_manifesto.txt'))
             if choice == 'rent':
                 item_choice = which_item(inventory, 'rent')
                 core.rent_item(item_choice)
