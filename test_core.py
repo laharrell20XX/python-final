@@ -226,3 +226,15 @@ def test_checkout_mix():
         'replacement_cost': 15
     }, 'rent']]
     assert core.checkout(cart) == 13.27
+
+
+def test_can_return_can():
+    username = 'Logan'
+    customer_manifesto = [{'Logan': '(one,two,three)'}, {'Bill': '()'}]
+    assert core.can_return(username, customer_manifesto)[0]
+
+
+def test_can_return_cannot():
+    customer = 'Bill'
+    customer_manifesto = [{'Logan': '(one,two,three)'}, {'Bill': '()'}]
+    assert not core.can_return(customer, customer_manifesto)
