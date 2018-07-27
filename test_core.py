@@ -231,10 +231,17 @@ def test_checkout_mix():
 def test_can_return_can():
     username = 'Logan'
     customer_manifesto = [{'Logan': '(one,two,three)'}, {'Bill': '()'}]
-    assert core.can_return(username, customer_manifesto)[0]
+    assert core.can_return(username, customer_manifesto)
 
 
 def test_can_return_cannot():
     customer = 'Bill'
     customer_manifesto = [{'Logan': '(one,two,three)'}, {'Bill': '()'}]
     assert not core.can_return(customer, customer_manifesto)
+
+
+def test_get_rented_items():
+    customer = 'Logan'
+    customer_manifesto = [{'Logan': '(one,two,three)'}]
+    assert core.get_rented_items(
+        customer, customer_manifesto) == ['one', 'two', 'three']
