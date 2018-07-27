@@ -80,3 +80,19 @@ def check_full_stock(inventory):
         if item['in_stock'] == item['initial_stock']:
             full_stock += True
     return full_stock == len(inventory)
+
+
+def can_return(customer, customer_manifesto):
+    ''' (str, list of dict) -> bool
+
+    checks the manifesto to see if the item has been rented by the person
+    '''
+    for user in customer_manifesto:
+        for username in user.keys():  #iterates over each username
+            if customer == username:  #checks to see who the user is in relation to the manifesto
+                if list(user[username].strip('()')
+                        ):  #checks to see if they had rented something before
+                    rented_items = user[username].strip('()').split(',')
+                    return True, rented_items
+                else:
+                    return False
