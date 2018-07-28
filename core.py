@@ -85,7 +85,7 @@ def check_full_stock(inventory):
 def can_return(customer, customer_manifesto):
     ''' (str, list of dict) -> bool,list, None
 
-    checks the manifesto to see if the item has been rented by the person
+    checks the manifesto to see if the person has rented anything already
     '''
     for user in customer_manifesto:
         for username in user.keys():  #iterates over each username
