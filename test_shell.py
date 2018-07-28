@@ -188,13 +188,16 @@ def test_which_item_all_in_stock_rent(output):
         'in_stock': 11,
         'initial_stock': 12
     }]
-    assert shell.which_item(inventory, 'rent') == {
-        'item_name': 'car',
-        'base_rental_price': 2,
-        'replacement_cost': 3,
-        'in_stock': 4,
-        'initial_stock': 5
-    }
+    customer = 'Logan'
+    customer_manifesto = [{'Logan': '()'}]
+    assert shell.which_item(inventory, 'rent', customer,
+                            customer_manifesto) == {
+                                'item_name': 'car',
+                                'base_rental_price': 2,
+                                'replacement_cost': 3,
+                                'in_stock': 4,
+                                'initial_stock': 5
+                            }
     assert output == '''car: $2.00 to rent ($3.00 to replace), 4 left in stock
 rabbit: $5.00 to rent ($6.00 to replace), 7 left in stock
 pen: $9.00 to rent ($10.00 to replace), 11 left in stock
@@ -245,13 +248,16 @@ def test_which_item_out_of_stock_rent(output):
         'in_stock': 11,
         'initial_stock': 12
     }]
-    assert shell.which_item(inventory, 'rent') == {
-        'item_name': 'rabbit',
-        'base_rental_price': 5,
-        'replacement_cost': 6,
-        'in_stock': 7,
-        'initial_stock': 8
-    }
+    customer = 'Logan'
+    customer_manifesto = [{'Logan': '()'}]
+    assert shell.which_item(inventory, 'rent', customer,
+                            customer_manifesto) == {
+                                'item_name': 'rabbit',
+                                'base_rental_price': 5,
+                                'replacement_cost': 6,
+                                'in_stock': 7,
+                                'initial_stock': 8
+                            }
     assert output == '''rabbit: $5.00 to rent ($6.00 to replace), 7 left in stock
 pen: $9.00 to rent ($10.00 to replace), 11 left in stock
 
@@ -278,8 +284,7 @@ Type the name of the item you want to rent (case sensitive)
 
 
 @with_inputs('dar', 'car', 'rabbit')
-@should_print
-def test_which_item_some_full_stock_return(output):
+def test_which_item_can_return():
     inventory = [{
         'item_name': 'car',
         'base_rental_price': 2,
@@ -299,35 +304,41 @@ def test_which_item_some_full_stock_return(output):
         'in_stock': 11,
         'initial_stock': 12
     }]
-    assert shell.which_item(inventory, 'return') == {
+    customer = 'Logan'
+    customer_manifesto = [{'Logan': '(rabbit)'}]
+    assert shell.which_item(inventory, 'return', customer,
+                            customer_manifesto) == {
+                                'item_name': 'rabbit',
+                                'base_rental_price': 5,
+                                'replacement_cost': 6,
+                                'in_stock': 7,
+                                'initial_stock': 8
+                            }
+
+
+@should_print
+def test_which_item_cannot_return(output):
+    inventory = [{
+        'item_name': 'car',
+        'base_rental_price': 2,
+        'replacement_cost': 3,
+        'in_stock': 5,
+        'initial_stock': 5
+    }, {
         'item_name': 'rabbit',
         'base_rental_price': 5,
         'replacement_cost': 6,
         'in_stock': 7,
         'initial_stock': 8
-    }
-    assert output == '''car: $2.00 to rent ($3.00 to replace), 5 left in stock
-rabbit: $5.00 to rent ($6.00 to replace), 7 left in stock
-pen: $9.00 to rent ($10.00 to replace), 11 left in stock
-
-
-Type the name of the item you want to return (case sensitive)
->>> dar
-Sorry that item is unable to be returned either because no one has rented it yet, or it is not offered here
-
-car: $2.00 to rent ($3.00 to replace), 5 left in stock
-rabbit: $5.00 to rent ($6.00 to replace), 7 left in stock
-pen: $9.00 to rent ($10.00 to replace), 11 left in stock
-
-
-Type the name of the item you want to return (case sensitive)
->>> car
-Sorry that item is unable to be returned either because no one has rented it yet, or it is not offered here
-
-car: $2.00 to rent ($3.00 to replace), 5 left in stock
-rabbit: $5.00 to rent ($6.00 to replace), 7 left in stock
-pen: $9.00 to rent ($10.00 to replace), 11 left in stock
-
-
-Type the name of the item you want to return (case sensitive)
->>> rabbit'''
+    }, {
+        'item_name': 'pen',
+        'base_rental_price': 9,
+        'replacement_cost': 10,
+        'in_stock': 11,
+        'initial_stock': 12
+    }]
+    customer = 'Logan'
+    customer_manifesto = [{'Logan': '()'}]
+    assert not shell.which_item(inventory, 'return', customer,
+                                customer_manifesto)
+    assert output == "You haven't rented anything yet.  Redirecting you to the login screen..."
