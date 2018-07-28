@@ -119,17 +119,16 @@ def return_mode(inventory, customer, customer_manifesto):
     while True:
         if core.can_return(customer, customer_manifesto):
             show_inventory(inventory, 'c')
-            print(
-                f'Okay you have {len(rented_items)} item(s) you have rented:')
+            print(f'You have {len(rented_items)} item(s) you have rented:')
             print('', *rented_items, sep='\n\t', end='\n')
             item_choice = input(
                 '\nType the name of the item you want to return (case sensitive)\n>>> '
             )
             for item in inventory:
-                if item_choice == item['item_name']:
-                    return item
-                else:
-                    print('Sorry, that item has not been rented by you.\n')
+                if item_choice == item['item_name'] and (
+                        item_choice in rented_items):
+                    return item  #returns any item choice that is first entered
+            print('Sorry, that item has not been rented by you.\n')
         else:
             print(
                 "You haven't rented anything yet.  Redirecting you to the login screen..."
