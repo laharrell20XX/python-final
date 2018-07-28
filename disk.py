@@ -45,7 +45,7 @@ def new_user(manifesto_file, username):
     Adds the provided username to the manifesto_file
     '''
     with open(manifesto_file, 'a') as file:
-        file.write(f'{username}, (item)\n')
+        file.write(f'{username}, ()\n')
 
 
 def read_manifesto(manifesto_file):
