@@ -54,10 +54,22 @@ def add_item_to_cart(cart, item, choice):
     return cart
 
 
+def transaction_tax(cart):
+    ''' (list of lists [dict, str]) -> float
+
+    Finds the tax of the rented items in the cart
+    '''
+    grand_total = 0
+    for item in cart:
+        if 'rent' in item:
+            grand_total += item[0]['base_rental_price']
+    return float(f'{grand_total * .07:.2f}')
+
+
 def checkout(cart):
     ''' (list of lists [dict, str]) -> float
 
-    Items in the cart are totalled and the total is returned
+    Items in the cart are totalled and the total and tax is returned
     '''
     grand_total = 0
     replacement_deposit = 0
