@@ -32,7 +32,7 @@ def login(manifesto_file, username):
         list_of_usernames = file.readlines()
     if list_of_usernames:  #checks if there are any customers at all
         for name in list_of_usernames:
-            if username == name.split(',')[0]:  #checks if the username exists
+            if username == name.split(', ')[0]:  #checks if the username exists
                 return True  #stops iterations if the name is found
             return False
     else:
@@ -76,3 +76,8 @@ def rewrite_manifesto_file(manifesto_file, items):
     
     rewrites the manifesto_file with any changes that occurred after a transaction.
     '''
+    for user in items:
+        for username in user.keys():
+            user_list.append(f"{username}, ({(',').join(user[username])})")
+    with open('manifesto.txt', 'w') as file:
+        file.write(('\n').join(user_list))
