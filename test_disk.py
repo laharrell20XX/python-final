@@ -48,10 +48,9 @@ def test_login_existing_customer():
 def test_process_user_items():
     list_of_usernames = ['Logan, ()', 'Bill, (two,three,four)']
     assert disk.process_user_items(list_of_usernames) == [{
-        'Logan': '()'
+        'Logan': ['']
     }, {
-        'Bill':
-        '(two,three,four)'
+        'Bill': ['two', 'three', 'four']
     }]
 
 
