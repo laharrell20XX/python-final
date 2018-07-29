@@ -40,7 +40,7 @@ def test_login_new_customer():
     assert not disk.login('manifesto.txt', 'Bob')
 
 
-@fake_file({'manifesto.txt': 'Logan,()\nBill,()\n'})
+@fake_file({'manifesto.txt': 'Logan, ()\nBill, ()\n'})
 def test_login_existing_customer():
     assert disk.login('manifesto.txt', 'Logan')
 
@@ -53,3 +53,16 @@ def test_process_user_items():
         'Bill':
         '(two,three,four)'
     }]
+
+
+@fake_file({'manifesto.txt': 'Logan, ()'})
+def test_rewrite_manifesto_file():
+    items = [{'Logan': ['two', 'three', 'four']}, {'Bill': []}]
+    user_list = []
+    for user in items:
+        for username in user.keys():
+            user_list.append(f"{username}, ({(',').join(user[username])})")
+    with open('manifesto.txt', 'w') as file:
+        file.write(('\n').join(user_list))
+    assert open('manifesto.txt').read() == '''Logan, (two,three,four)
+Bill, ()'''
