@@ -228,6 +228,11 @@ def test_checkout_mix():
     assert core.checkout(cart) == 13.27
 
 
+def test_checkout_empty():
+    cart = [[]]
+    assert core.checkout(cart) == 0.00
+
+
 def test_can_return_can():
     username = 'Logan'
     customer_manifesto = [{'Logan': '(one,two,three)'}, {'Bill': '()'}]
@@ -245,3 +250,14 @@ def test_get_rented_items():
     customer_manifesto = [{'Logan': '(one,two,three)'}]
     assert core.get_rented_items(
         customer, customer_manifesto) == ['one', 'two', 'three']
+
+
+def test_transaction_tax():
+    cart = [[{
+        'item_name': 'car',
+        'base_rental_price': 5
+    }, 'rent'], [{
+        'item_name': 'rabbit',
+        'base_rental_price': 7
+    }, 'rent']]
+    assert core.transaction_tax(cart) == .84
