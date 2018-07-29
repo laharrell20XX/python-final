@@ -66,7 +66,9 @@ def process_user_items(list_of_usernames):
     list_of_users = []
     for user in list_of_usernames:
         user = user.strip().split(', ')
-        user_dict = dict([user])
+        username = user[0]
+        rented_items = user[1].strip('()').split(',')
+        user_dict = dict([[username, rented_items]])
         list_of_users.append(user_dict)
     return list_of_users
 
