@@ -127,5 +127,5 @@ def update_revenue(revenue_file, revenue, total):
 
     rewrites the revenue_file with the revenue + total
     '''
-    with open('fake_revenue.txt', 'w') as file:
+    with open('revenue.txt', 'w') as file:
         file.write(f'{revenue + total:.2f}')
