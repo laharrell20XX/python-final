@@ -114,12 +114,12 @@ def rent_mode(inventory):
     while True:
         show_inventory(inventory, 'c')
         item_choice = input(
-            '\nType the name of the item you want to rent (case sensitive)\n>>> '
-        )
+            '\nType the name of the item you want to rent (case sensitive); Type "back" to return to the rent/return screen \n>>> '
+        ).lower()
         if item_choice == 'back':
             return item_choice
         for item in inventory:
-            if item_choice == item['item_name'] and item['in_stock']:
+            if item_choice == item['item_name'].lower() and item['in_stock']:
                 return item
         print(
             'Sorry, either we do not have that item or it is out of stock. Please try again\n'
@@ -164,19 +164,20 @@ def show_receipt(cart, customer):
     '''
     grand_total = '$' + '{:.2f}'.format(core.checkout(cart))
     grand_tax = '$' + '{:.2f}'.format(core.transaction_tax(cart))
-    print(f'{customer}')
+    print(f'\n\n{customer}')
     print('Receipt'.center(40) + '\n')
     print('*' * 40)
     for item in cart:
         if 'rent' in item:
-            print('''\t{:<15}{:>10}{:>8}
-\t{:<10}{:>18.2f}'''.format(item[0]['item_name'], item[0]['base_rental_price'],
-                            item[1], '(Replacement Cost)',
-                            (item[0]['replacement_cost'] * .1)))
+            print('''\t{:<20}{:>15}{:>15}
+\t{:<20}{:>18}\n'''.format(item[0]['item_name'],
+                           '$' + f'{item[0]["base_rental_price"]:.2f}',
+                           item[1], '(Replacement deposit)',
+                           ('$' + f'{item[0]["replacement_cost"] * .1:.2f}')))
         if 'return' in item:
-            print('''\t{:<10}{:>10.2f}{:>8}'''.format(
-                item[0]['item_name'], -item[0]['replacement_cost'] * .1,
-                item[1]))
+            print('''\t{:<20}{:>10}{:>8}\n'''.format(
+                item[0]['item_name'],
+                '$' + f'{-item[0]["replacement_cost"] * .1:.2f}', item[1]))
     print('*' * 40)
     print('''\t{:<10}{:>18}
 \t{:<10}{:>18}'''
@@ -223,19 +224,23 @@ def customer_path(identity, inventory, cart):
             item_choice = which_item(inventory, 'rent', username,
                                      customer_manifesto)
             if item_choice == 'back':
+                _ = system("clear")
                 continue
             core.rent_item(item_choice)
-            print(f'1 {item_choice["item_name"]} has been added to your cart.')
+            print(
+                f'1 {item_choice["item_name"]} has been added to your cart.\n\n'
+            )
             core.add_item_to_cart(cart, item_choice, choice)
         if choice == 'return':
             item_choice = which_item(inventory, 'return', username,
                                      customer_manifesto)
             if item_choice == 'back':  # if the user wants to back out
+                _ = system("clear")
                 continue
             elif item_choice:  # if the user can return something
                 core.return_item(item_choice)
                 print(
-                    f'1 {item_choice["item_name"]} has been returned.  Please checkout to get your deposit back.'
+                    f'1 {item_choice["item_name"]} has been returned.  Please checkout to get your deposit back.\n\n'
                 )
                 core.add_item_to_cart(cart, item_choice, choice)
             else:  # if the user cannot return anything
