@@ -1,5 +1,6 @@
 import disk
 from bcca.test import fake_file
+from datetime import datetime
 
 
 @fake_file({
@@ -87,3 +88,22 @@ def test_rewrite_manifesto_file():
         file.write(('\n').join(user_list))
     assert open('manifesto.txt').read() == '''Logan, (two,three,four)
 Bill, ()'''
+
+
+@fake_file({'fake_revenue.txt': '100.00'})
+def test_read_revenue_nonempty():
+    assert disk.read_revenue('fake_revenue.txt') == 100.0
+
+
+@fake_file({'fake_revenue.txt': ''})
+def test_read_revenue_empty():
+    assert disk.read_revenue('fake_revenue.txt') == 0.0
+
+
+@fake_file({'fake_revenue.txt': '100.00'})
+def test_update_revenue():
+    revenue = 100.0
+    total = 42.5
+    with open('fake_revenue.txt', 'w') as file:
+        file.write(f'{revenue + total:.2f}')
+    assert open('fake_revenue.txt').read() == '142.50'
