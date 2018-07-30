@@ -26,6 +26,15 @@ def rewrite_inventory(inventory_file, inventory):
             )
 
 
+def read_history(history_file):
+    ''' (file) -> list
+
+    Reads the history file and returns it as a list
+    '''
+    with open(history_file) as file:
+        return file.readlines()
+
+
 def update_history(history_file, customer, total):
     ''' (file, str, float) -> NoneType
 
@@ -33,7 +42,7 @@ def update_history(history_file, customer, total):
     '''
     with open(history_file, 'a') as file:
         file.write(
-            f"{customer}, {datetime.now().strftime('%m/%d/%y @ %I:%M:%S %p')}, ${total}"
+            f"{customer}, {datetime.now().strftime('%m/%d/%y @ %I:%M:%S %p')}, ${total:.2f}\n"
         )
 
 
