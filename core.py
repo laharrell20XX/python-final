@@ -102,11 +102,39 @@ def can_return(customer, customer_manifesto):
     for user in customer_manifesto:
         for username in user.keys():  #iterates over each username
             if customer == username:  #checks to see who the user is in relation to the manifesto
-                if list(user[username].strip('()')
-                        ):  #checks to see if they had rented something before
-                    return True
+                for item in user[username]:
+                    if item:  #checks to see if they had rented something before
+                        return True
                 else:
                     return False
+
+
+def change_rented_items(cart, customer, customer_manifesto):
+    ''' (list of lists [dict, str], str, list of dict) -> list of dict
+
+    changes the customers list of rented items based on what was in their cart
+    '''
+    new_rented_items = []
+    returned_items = []
+    for item_mode in cart:
+        if 'rent' in item_mode:
+            new_rented_items.append(item_mode[0]['item_name'])
+        if 'return' in item_mode:
+            returned_items.append(item_mode[0]['item_name'])
+    for item in returned_items:  #add condition to see if the customer doesn't have anything out
+        for user in customer_manifesto:
+            for username in user.keys():
+                if username == customer and item in user[customer]:
+                    user[customer] = user[customer].pop(item)
+    for item in new_rented_items:
+        for user in customer_manifesto:
+            for username in user.keys():
+                if username == customer and not user[customer][0]:  #user doesn't have anything out
+                    user[customer] = []
+                    user[customer].append(item)
+                elif username == customer and user[customer]:  #user has something out
+                    user[customer].append(item)
+    return customer_manifesto
 
 
 def get_rented_items(customer, customer_manifesto):
@@ -117,5 +145,5 @@ def get_rented_items(customer, customer_manifesto):
     for user in customer_manifesto:
         for username in user.keys():
             if customer == username:
-                rented_items = user[username].strip('()').split(',')
+                rented_items = user[username]
                 return rented_items
