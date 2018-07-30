@@ -2,9 +2,10 @@ import core, disk
 
 
 def greeting():
-    '''
+    ''' -> NoneType
     Greets the user
     '''
+    print('Hi!  Welcome to the Costumes n Props rental agency\n\n')
 
 
 def show_inventory(inventory, identity):
@@ -136,12 +137,14 @@ def return_mode(inventory, customer, customer_manifesto):
             return None
 
 
-def show_receipt(cart):
-    ''' (list of lists [dict, str]) -> NoneType
+def show_receipt(cart, customer):
+    ''' (list of lists [dict, str], str) -> NoneType
 
     prints out the receipt to the user; negative number means money was refunded
     '''
     grand_total = core.checkout(cart)
+    grand_tax = core.transaction_tax(cart)
+    print(f'\t{customer}')
     print('Receipt'.center(30) + '\n')
     print('*' * 40)
     for item in cart:
@@ -155,10 +158,15 @@ def show_receipt(cart):
             print('''\t{:<10}{:>10.2f}{:>8}'''.format(
                 item[0]['item_name'], -item[0]['replacement_cost'] * .1,
                 item[1]))
-    print('\t')  #prints tax total then prints grand total
+    print('*' * 40)
+    print('''\t{:<10}{:>18.2f}
+\t{:<10}{:>18.2f}'''
+          .format('Tax', grand_tax, 'Total',
+                  grand_total))  #prints tax total then prints grand total
 
 
 def main():
+    greeting()
     inventory = core.process_inventory(disk.read_inventory('inventory.txt'))
     identity = employee_or_customer()
     cart = []
@@ -169,21 +177,32 @@ def main():
             customer_manifesto = disk.process_user_items(
                 disk.read_manifesto('customer_manifesto.txt'))
             if choice == 'rent':
-                item_choice = which_item(inventory, 'rent')
+                item_choice = which_item(inventory, 'rent', username,
+                                         customer_manifesto)
                 core.rent_item(item_choice)
                 print(
                     f'1 {item_choice["item_name"]} has been added to your cart.'
                 )
                 core.add_item_to_cart(cart, item_choice, choice)
             if choice == 'return':
-                item_choice = which_item(inventory, 'return')
-                core.return_item(item_choice)
-                print(
-                    f'1 {item_choice["item_name"]} has been returned.  Please checkout to get your deposit back.'
-                )
-                core.add_item_to_cart(cart, item, choice)
+                item_choice = which_item(inventory, 'return', username,
+                                         customer_manifesto)
+                if item_choice:
+                    core.return_item(item_choice)
+                    print(
+                        f'1 {item_choice["item_name"]} has been returned.  Please checkout to get your deposit back.'
+                    )
+                    core.add_item_to_cart(cart, item, choice)
+                else:
+                    continue
             if choice == 'checkout':  #next on the agenda
-                core.checkout(cart)
+                show_receipt(cart, username)
+                new_customer_manifesto = core.change_rented_items(
+                    cart, username, customer_manifesto)
+                disk.rewrite_manifesto_file('customer_manifesto.txt',
+                                            new_customer_manifesto)
+                disk.rewrite_inventory('inventory.txt', inventory)
+                print('\n\nGoodbye, have a nice day')
 
 
 if __name__ == '__main__':
