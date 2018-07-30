@@ -261,3 +261,25 @@ def test_transaction_tax():
         'base_rental_price': 7
     }, 'rent']]
     assert core.transaction_tax(cart) == .84
+
+
+def test_change_rented_items_more_items():
+    cart = [[{'item_name': 'car'}, 'rent'], [{'item_name': 'pizza'}, 'rent']]
+    customer = 'Logan'
+    customer_manifesto = [{'Logan': ['car', 'bear']}, {'Bill': ['']}]
+    assert core.change_rented_items(cart, customer, customer_manifesto) == [{
+        'Logan': ['car', 'bear', 'car', 'pizza']
+    }, {
+        'Bill': ['']
+    }]
+
+
+def test_change_rented_items_new_items():
+    cart = [[{'item_name': 'car'}, 'rent'], [{'item_name': 'pizza'}, 'rent']]
+    customer = 'Bill'
+    customer_manifesto = [{'Logan': ['car', 'bear']}, {'Bill': ['']}]
+    assert core.change_rented_items(cart, customer, customer_manifesto) == [{
+        'Logan': ['car', 'bear']
+    }, {
+        'Bill': ['car', 'pizza']
+    }]
