@@ -16,15 +16,37 @@ def test_read_inventory():
 
 @fake_file({
     'fake_inventory.txt':
-    '''car,2,3,4,5
+    '''car,2,3,5,5
 rabbit,5,6,7,8
-pen,9,10,11,12'''
+pen,9,10,11,12
+'''
 })
 def test_rewrite_inventory():
+    inventory = [{
+        'item_name': 'car',
+        'base_rental_price': 2,
+        'replacement_cost': 3,
+        'in_stock': 2,
+        'initial_stock': 5
+    }, {
+        'item_name': 'rabbit',
+        'base_rental_price': 5,
+        'replacement_cost': 6,
+        'in_stock': 7,
+        'initial_stock': 8
+    }, {
+        'item_name': 'pen',
+        'base_rental_price': 9,
+        'replacement_cost': 10,
+        'in_stock': 11,
+        'initial_stock': 12
+    }]
     with open('fake_inventory.txt', 'w') as file:
-        for item in ['car,2,3,4,5\n', 'rabbit,5,6,7,8\n', 'pen,9,10,11,12\n']:
-            file.write(item)
-    assert open('fake_inventory.txt').read() == '''car,2,3,4,5
+        for item in inventory:
+            file.write(
+                f"{item['item_name']},{item['base_rental_price']},{item['replacement_cost']},{item['in_stock']},{item['initial_stock']}\n"
+            )
+    assert open('fake_inventory.txt').read() == '''car,2,3,2,5
 rabbit,5,6,7,8
 pen,9,10,11,12
 '''
@@ -56,9 +78,9 @@ def test_process_user_items():
 
 @fake_file({'manifesto.txt': 'Logan, ()'})
 def test_rewrite_manifesto_file():
-    items = [{'Logan': ['two', 'three', 'four']}, {'Bill': []}]
+    customer_manifesto = [{'Logan': ['two', 'three', 'four']}, {'Bill': []}]
     user_list = []
-    for user in items:
+    for user in customer_manifesto:
         for username in user.keys():
             user_list.append(f"{username}, ({(',').join(user[username])})")
     with open('manifesto.txt', 'w') as file:
