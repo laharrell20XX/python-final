@@ -184,6 +184,25 @@ def show_receipt(cart, customer):
                   grand_total))  #prints tax total then prints grand total
 
 
+def checkout_operations(inventory, cart, username, customer_manifesto):
+    ''' (list of lists [dict, str], str, list of dict) -> NoneType
+
+    The functions called when the user checks out
+    '''
+    show_receipt(cart, username)
+    grand_total = core.checkout(cart)
+    new_customer_manifesto = core.change_rented_items(cart, username,
+                                                      customer_manifesto)
+    disk.rewrite_manifesto_file('customer_manifesto.txt',
+                                new_customer_manifesto)
+    disk.rewrite_inventory('inventory.txt', inventory)
+    disk.update_history('history.txt', username, grand_total)
+    revenue = disk.read_revenue('revenue.txt')
+    disk.update_revenue('revenue.txt', revenue, grand_total)
+    print('\n\nGoodbye, have a nice day!')
+    quit()
+
+
 def customer_path(identity, inventory, cart):
     ''' (str, list of dict, list of lists [dict, str]) -> NoneType
 
@@ -211,24 +230,18 @@ def customer_path(identity, inventory, cart):
         if choice == 'return':
             item_choice = which_item(inventory, 'return', username,
                                      customer_manifesto)
-            if item_choice == 'back':
+            if item_choice == 'back':  # if the user wants to back out
                 continue
-            core.return_item(item_choice)
-            print(
-                f'1 {item_choice["item_name"]} has been returned.  Please checkout to get your deposit back.'
-            )
-            core.add_item_to_cart(cart, item_choice, choice)
+            elif item_choice:  # if the user can return something
+                core.return_item(item_choice)
+                print(
+                    f'1 {item_choice["item_name"]} has been returned.  Please checkout to get your deposit back.'
+                )
+                core.add_item_to_cart(cart, item_choice, choice)
+            else:  # if the user cannot return anything
+                continue
         if choice == 'checkout':  #next on the agenda
-            show_receipt(cart, username)
-            grand_total = core.checkout(cart)
-            new_customer_manifesto = core.change_rented_items(
-                cart, username, customer_manifesto)
-            disk.rewrite_manifesto_file('customer_manifesto.txt',
-                                        new_customer_manifesto)
-            disk.rewrite_inventory('inventory.txt', inventory)
-            disk.update_history('history.txt', username, grand_total)
-            print('\n\nGoodbye, have a nice day!')
-            quit()
+            checkout_operations(inventory, cart, username, customer_manifesto)
 
 
 def manager():
