@@ -1,4 +1,5 @@
 import core
+from datetime import datetime
 
 
 def read_inventory(inventory_file):
@@ -23,6 +24,17 @@ def rewrite_inventory(inventory_file, inventory):
             file.write(
                 f"{item['item_name']},{item['base_rental_price']},{item['replacement_cost']},{item['in_stock']},{item['initial_stock']}\n"
             )
+
+
+def update_history(history_file, customer, total):
+    ''' (file, str, float) -> NoneType
+
+    Updates the transaction history in for: customer, timestamp, total
+    '''
+    with open(history_file, 'a') as file:
+        file.write(
+            f"{customer}, {datetime.now().strftime('%m/%d/%y @ %I:%M:%S %p')}, ${total}"
+        )
 
 
 def login(manifesto_file, username):
