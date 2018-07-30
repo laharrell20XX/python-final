@@ -13,14 +13,16 @@ def read_inventory(inventory_file):
     return inventory_list
 
 
-def rewrite_inventory(inventory_file, inventory_list):
-    '''(list of dict) -> file
+def rewrite_inventory(inventory_file, inventory):
+    '''(file, list of dict) -> NoneType
 
     Takes the inventory_list and turns it back into its original file format
     '''
     with open(inventory_file, 'w') as file:
-        for item in inventory_list:
-            file.write(item)
+        for item in inventory:
+            file.write(
+                f"{item['item_name']},{item['base_rental_price']},{item['replacement_cost']},{item['in_stock']},{item['initial_stock']}\n"
+            )
 
 
 def login(manifesto_file, username):
@@ -73,12 +75,13 @@ def process_user_items(list_of_usernames):
     return list_of_users
 
 
-def rewrite_manifesto_file(manifesto_file, items):
+def rewrite_manifesto_file(manifesto_file, customer_manifesto):
     ''' (file, list) -> file
     
     rewrites the manifesto_file with any changes that occurred after a transaction.
     '''
-    for user in items:
+    user_list = []
+    for user in customer_manifesto:
         for username in user.keys():
             user_list.append(f"{username}, ({(',').join(user[username])})")
     with open('manifesto.txt', 'w') as file:
