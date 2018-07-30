@@ -197,11 +197,13 @@ def main():
                     continue
             if choice == 'checkout':  #next on the agenda
                 show_receipt(cart, username)
+                grand_total = core.checkout(cart)
                 new_customer_manifesto = core.change_rented_items(
                     cart, username, customer_manifesto)
                 disk.rewrite_manifesto_file('customer_manifesto.txt',
                                             new_customer_manifesto)
                 disk.rewrite_inventory('inventory.txt', inventory)
+                disk.update_history('history.txt', username, grand_total)
                 print('\n\nGoodbye, have a nice day')
 
 
