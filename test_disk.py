@@ -107,3 +107,10 @@ def test_update_revenue():
     with open('fake_revenue.txt', 'w') as file:
         file.write(f'{revenue + total:.2f}')
     assert open('fake_revenue.txt').read() == '142.50'
+
+
+@fake_file({'fake_history.txt': 'Logan, 07/30/18 @ 09:40:28 AM, $72.50'})
+def test_read_history():
+    assert disk.read_history('fake_history.txt') == [
+        'Logan, 07/30/18 @ 09:40:28 AM, $72.50'
+    ]
