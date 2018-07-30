@@ -305,7 +305,7 @@ def test_which_item_can_return():
         'initial_stock': 12
     }]
     customer = 'Logan'
-    customer_manifesto = [{'Logan': '(rabbit)'}]
+    customer_manifesto = [{'Logan': ['rabbit']}]
     assert shell.which_item(inventory, 'return', customer,
                             customer_manifesto) == {
                                 'item_name': 'rabbit',
@@ -338,7 +338,7 @@ def test_which_item_cannot_return(output):
         'initial_stock': 12
     }]
     customer = 'Logan'
-    customer_manifesto = [{'Logan': '()'}]
+    customer_manifesto = [{'Logan': ['']}]
     assert not shell.which_item(inventory, 'return', customer,
                                 customer_manifesto)
     assert output == "You haven't rented anything yet.  Redirecting you to the login screen..."
