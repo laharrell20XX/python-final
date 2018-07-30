@@ -125,7 +125,7 @@ def change_rented_items(cart, customer, customer_manifesto):
         for user in customer_manifesto:
             for username in user.keys():
                 if username == customer and item in user[customer]:
-                    user[customer] = user[customer].pop(item)
+                    user[customer].remove(item)
     for item in new_rented_items:
         for user in customer_manifesto:
             for username in user.keys():
