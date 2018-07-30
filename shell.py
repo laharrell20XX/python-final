@@ -233,6 +233,39 @@ def customer_path(identity, inventory, cart):
                 quit()
 
 
+def manager():
+    while True:
+        manager_option = input('''- [i]nventory
+- [r]envenue
+- [s]tock
+- [t]ransaction history
+- [c]ustomer manifesto
+>>> ''').lower()
+    if manager_option in ['i', 'r', 's', 't', 'c']:
+        return manager_option
+    else:
+        print('\nInvalid Option\n')
+
+
+def employee_path(inventory):
+    ''' (list of dict) -> NoneType
+
+    Opens a manager for the employee
+    '''
+    while True:
+        manager_option = manager_option()
+        if manager_option == 'i':
+            pass
+        if manager_option == 'r':
+            pass
+        if manager_option == 's':
+            pass
+        if manager_option == 't':
+            pass
+        if manager_option == 'c':
+            pass
+
+
 def main():
     greeting()
     while True:
