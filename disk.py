@@ -96,5 +96,27 @@ def rewrite_manifesto_file(manifesto_file, customer_manifesto):
     for user in customer_manifesto:
         for username in user.keys():
             user_list.append(f"{username}, ({(',').join(user[username])})")
-    with open('manifesto.txt', 'w') as file:
+    with open('customer_manifesto.txt', 'w') as file:
         file.write(('\n').join(user_list))
+
+
+def read_revenue(revenue_file):
+    ''' (file) -> float
+
+    reads the revenue_file and returns it as a float
+    '''
+    with open(revenue_file) as file:
+        revenue = file.readline()
+        if revenue:
+            return float(revenue.strip())
+        else:
+            return float(0)
+
+
+def update_revenue(revenue_file, revenue, total):
+    ''' (file, float, float) -> file
+
+    rewrites the revenue_file with the revenue + total
+    '''
+    with open('fake_revenue.txt', 'w') as file:
+        file.write(f'{revenue + total:.2f}')
