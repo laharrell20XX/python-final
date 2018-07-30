@@ -23,7 +23,7 @@ def show_inventory(inventory, identity):
         print(inventory_str)
     if identity == 'e':  #what employee sees
         for item in inventory:
-            inventory_str += f'{item["item_name"]}: ${item["base_rental_price"]:.2f} to rent (${item["replacement_cost"]:.2f} to replace), {item["in_stock"]} left in stock (initial stock: {item["initial_stock"]})\n'
+            inventory_str += f'{item["item_name"]}: ${item["base_rental_price"]:.2f} to rent (${item["replacement_cost"]:.2f} to replace), {item["in_stock"]} left in stock (initial stock: {item["initial_stock"]})\n\n'
         print(inventory_str)
 
 
@@ -144,12 +144,13 @@ def return_mode(inventory, customer, customer_manifesto):
                 return item_choice
             for item in inventory:
                 if item_choice == item['item_name'].lower() and (
-                        item_choice in [i.lower() for item in rented_items]):
+                        item_choice in [item.lower()
+                                        for item in rented_items]):
                     return item
             print('Sorry, that item has not been rented by you.\n')
         else:
             print(
-                "You haven't rented anything yet.  Redirecting you to the rent or return screen...\n\n"
+                "You haven't rented anything yet.  Redirecting you to the rent/return screen...\n\n"
             )
             sleep(3)
             _ = system("clear")
@@ -190,80 +191,111 @@ def customer_path(identity, inventory, cart):
     '''
     username = user_login()
     while True:
-        if identity == 'c':  #customer path
-            if username == 'back':
-                _ = system("clear")
-                break
-            choice = rent_or_return()
-            customer_manifesto = disk.process_user_items(
-                disk.read_manifesto('customer_manifesto.txt'))
-            if choice == 'leave':
-                _ = system("clear")
-                break
-            if choice == 'rent':
-                item_choice = which_item(inventory, 'rent', username,
-                                         customer_manifesto)
-                if item_choice == 'back':
-                    continue
-                core.rent_item(item_choice)
-                print(
-                    f'1 {item_choice["item_name"]} has been added to your cart.'
-                )
-                core.add_item_to_cart(cart, item_choice, choice)
-            if choice == 'return':
-                item_choice = which_item(inventory, 'return', username,
-                                         customer_manifesto)
-                if item_choice == 'back':
-                    continue
-                core.return_item(item_choice)
-                print(
-                    f'1 {item_choice["item_name"]} has been returned.  Please checkout to get your deposit back.'
-                )
-                core.add_item_to_cart(cart, item_choice, choice)
-            if choice == 'checkout':  #next on the agenda
-                show_receipt(cart, username)
-                grand_total = core.checkout(cart)
-                new_customer_manifesto = core.change_rented_items(
-                    cart, username, customer_manifesto)
-                disk.rewrite_manifesto_file('customer_manifesto.txt',
-                                            new_customer_manifesto)
-                disk.rewrite_inventory('inventory.txt', inventory)
-                disk.update_history('history.txt', username, grand_total)
-                print('\n\nGoodbye, have a nice day!')
-                quit()
+        if username == 'back':
+            _ = system("clear")
+            break
+        choice = rent_or_return()
+        customer_manifesto = disk.process_user_items(
+            disk.read_manifesto('customer_manifesto.txt'))
+        if choice == 'leave':
+            _ = system("clear")
+            break
+        if choice == 'rent':
+            item_choice = which_item(inventory, 'rent', username,
+                                     customer_manifesto)
+            if item_choice == 'back':
+                continue
+            core.rent_item(item_choice)
+            print(f'1 {item_choice["item_name"]} has been added to your cart.')
+            core.add_item_to_cart(cart, item_choice, choice)
+        if choice == 'return':
+            item_choice = which_item(inventory, 'return', username,
+                                     customer_manifesto)
+            if item_choice == 'back':
+                continue
+            core.return_item(item_choice)
+            print(
+                f'1 {item_choice["item_name"]} has been returned.  Please checkout to get your deposit back.'
+            )
+            core.add_item_to_cart(cart, item_choice, choice)
+        if choice == 'checkout':  #next on the agenda
+            show_receipt(cart, username)
+            grand_total = core.checkout(cart)
+            new_customer_manifesto = core.change_rented_items(
+                cart, username, customer_manifesto)
+            disk.rewrite_manifesto_file('customer_manifesto.txt',
+                                        new_customer_manifesto)
+            disk.rewrite_inventory('inventory.txt', inventory)
+            disk.update_history('history.txt', username, grand_total)
+            print('\n\nGoodbye, have a nice day!')
+            quit()
 
 
 def manager():
     while True:
-        manager_option = input('''- [i]nventory
+        manager_option = input('''
+
+- [i]nventory
 - [r]envenue
-- [s]tock
 - [t]ransaction history
 - [c]ustomer manifesto
+- [b]ack
 >>> ''').lower()
-    if manager_option in ['i', 'r', 's', 't', 'c']:
-        return manager_option
-    else:
-        print('\nInvalid Option\n')
+        if manager_option in ['i', 'r', 't', 'c', 'b']:
+            return manager_option
+        else:
+            print('\nInvalid Option\n')
 
 
-def employee_path(inventory):
+def show_company_revenue():
+    ''' self -> NoneType
+
+    Shows the revenue of the company in a user-friendly format
+    '''
+    revenue = disk.read_revenue('revenue.txt')
+    print(f'\nCompany Revenue: ${revenue:.2f}\n')
+
+
+def show_transaction_history():
+    ''' list -> NoneType
+
+    Show the transaction history of the company in a user-friendly format
+    '''
+    history = disk.read_history('history.txt')
+    for transaction in history:
+        print(transaction)
+
+
+def show_customer_manifesto():
+    ''' self -> NoneType
+
+    Show the customers and the items they have rented in a user-friendly format
+    '''
+    customer_manifesto = disk.process_user_items(
+        disk.read_manifesto('customer_manifesto.txt'))
+    for user in customer_manifesto:
+        for username in user.keys():
+            print(
+                f"{username}'s rented items: {(', ').join(user[username])}\n")
+
+
+def employee_manager(inventory, identity):
     ''' (list of dict) -> NoneType
 
     Opens a manager for the employee
     '''
     while True:
-        manager_option = manager_option()
+        manager_option = manager()
         if manager_option == 'i':
-            pass
+            show_inventory(inventory, identity)
         if manager_option == 'r':
-            pass
-        if manager_option == 's':
-            pass
+            show_company_revenue()
         if manager_option == 't':
-            pass
+            show_transaction_history()
         if manager_option == 'c':
-            pass
+            show_customer_manifesto()
+        if manager_option == 'b':
+            break
 
 
 def main():
@@ -272,8 +304,11 @@ def main():
         inventory = core.process_inventory(
             disk.read_inventory('inventory.txt'))
         identity = employee_or_customer()
-        cart = []
-        customer_path(identity, inventory, cart)
+        if identity == 'e':
+            employee_manager(inventory, identity)
+        if identity == 'c':
+            cart = []
+            customer_path(identity, inventory, cart)
 
 
 if __name__ == '__main__':
