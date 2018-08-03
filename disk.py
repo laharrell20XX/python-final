@@ -10,7 +10,8 @@ def read_inventory(inventory_file):
     inventory_list = []
     with open(inventory_file) as file:
         for line in file.readlines():
-            inventory_list.append(line)
+            if line.strip():
+                inventory_list.append(line)
     return inventory_list
 
 
@@ -56,8 +57,8 @@ def login(manifesto_file, username):
     if list_of_usernames:  #checks if there are any customers at all
         for name in list_of_usernames:
             if username == name.split(', ')[0]:  #checks if the username exists
-                return True  #stops iterations if the name is found
-            return False
+                return True  #stops iterations if the name is found; exactly the problem to stop
+        return False
     else:
         return False
 
@@ -90,7 +91,10 @@ def process_user_items(list_of_usernames):
     for user in list_of_usernames:
         user = user.strip().split(', ')
         username = user[0]
-        rented_items = user[1].strip('()').split(',')
+        if user[1].strip('()').split(',')[0]: #if the user has rented something
+            rented_items = user[1].strip('()').split(',')
+        else: #if the user has rented nothing
+            rented_items = list(user[1].strip('()').split(',')[0])
         user_dict = dict([[username, rented_items]])
         list_of_users.append(user_dict)
     return list_of_users
@@ -104,9 +108,9 @@ def rewrite_manifesto_file(manifesto_file, customer_manifesto):
     user_list = []
     for user in customer_manifesto:
         for username in user.keys():
-            user_list.append(f"{username}, ({(',').join(user[username])})")
+            user_list.append(f"{username}, ({(',').join(user[username])})\n")
     with open('customer_manifesto.txt', 'w') as file:
-        file.write(('\n').join(user_list))
+        file.write(('').join(user_list))
 
 
 def read_revenue(revenue_file):
