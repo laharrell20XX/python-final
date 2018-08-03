@@ -129,7 +129,7 @@ def change_rented_items(cart, customer, customer_manifesto):
     for item in new_rented_items:
         for user in customer_manifesto:
             for username in user.keys():
-                if username == customer and not user[customer][0]:  #user doesn't have anything out
+                if username == customer and not user[customer]:  #user doesn't have anything out
                     user[customer] = []
                     user[customer].append(item)
                 elif username == customer and user[customer]:  #user has something out
