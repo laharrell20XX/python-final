@@ -1,0 +1,13 @@
+Saitama Costume,30,100,7,7
+The Professional Costume,35,105,5,5
+A Businessman Costume,40,110,4,4
+Godzilla Costume,50,120,3,3
+Alien Costume,60,200,2,2
+Viking Costume,40,110,4,4
+Lego Millennium Falcon,25,80,2,2
+Fake Treasure,15,70,1,1
+Human Skeleton,20,90,5,5
+Real Fake Door,25,100,8,8
+Sword,5,20,15,15
+Shield,5,20,15,15
+Tesla Coil,100,500,2,2
