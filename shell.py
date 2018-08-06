@@ -196,7 +196,7 @@ def checkout_operations(inventory, cart, username, customer_manifesto):
                                                       customer_manifesto)
     disk.rewrite_manifesto_file('customer_manifesto.txt',
                                 new_customer_manifesto)
-    disk.rewrite_inventory('inventory.txt', inventory)
+    disk.rewrite_inventory('inventory_2.txt', inventory)
     disk.update_history('history.txt', username, grand_total)
     revenue = disk.read_revenue('revenue.txt')
     disk.update_revenue('revenue.txt', revenue, grand_total)
@@ -320,7 +320,7 @@ def main():
     greeting()
     while True:
         inventory = core.process_inventory(
-            disk.read_inventory('inventory.txt'))
+            disk.read_inventory('inventory_2.txt'))
         identity = employee_or_customer()
         if identity == 'e':
             employee_manager(inventory, identity)
