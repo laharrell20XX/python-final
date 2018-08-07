@@ -1,5 +1,5 @@
 import core, disk
-from os import system
+import os
 from time import sleep
 
 
@@ -8,6 +8,13 @@ def greeting():
     Greets the user
     '''
     print('Hi!  Welcome to the Costumes n Props rental agency\n\n')
+
+
+def clear_screen():
+    if os.name == 'nt':
+        os.system("cls")
+    else:
+        os.system("clear")
 
 
 def show_inventory(inventory, identity):
@@ -153,7 +160,7 @@ def return_mode(inventory, customer, customer_manifesto):
                 "You haven't rented anything yet.  Redirecting you to the rent/return screen...\n\n"
             )
             sleep(3)
-            _ = system("clear")
+            _ = clear_screen()
             return None
 
 
@@ -212,19 +219,19 @@ def customer_path(identity, inventory, cart):
     username = user_login()
     while True:
         if username == 'back':
-            _ = system("clear")
+            _ = clear_screen()
             break
         choice = rent_or_return()
         customer_manifesto = disk.process_user_items(
             disk.read_manifesto('customer_manifesto.txt'))
         if choice == 'leave':
-            _ = system("clear")
+            _ = clear_screen()
             break
         if choice == 'rent':
             item_choice = which_item(inventory, 'rent', username,
                                      customer_manifesto)
             if item_choice == 'back':
-                _ = system("clear")
+                _ = clear_screen()
                 continue
             core.rent_item(item_choice)
             print(
@@ -235,7 +242,7 @@ def customer_path(identity, inventory, cart):
             item_choice = which_item(inventory, 'return', username,
                                      customer_manifesto)
             if item_choice == 'back':  # if the user wants to back out
-                _ = system("clear")
+                _ = clear_screen()
                 continue
             elif item_choice:  # if the user can return something
                 core.return_item(item_choice)
